@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Distribution</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function CardGame() {
+            const [numPlayers, setNumPlayers] = React.useState("");
+            const [error, setError] = React.useState("");
+            const [cards, setCards] = React.useState([]);
+            
+            const handleSubmit = async () => {
+                const players = parseInt(numPlayers, 10);
+                if (isNaN(players) || players <= 0 || players >= 1000) {
+                    setError("Please enter a valid number of players (1 - 999).")
+                    return;
+                }
+                setError("");
+                
+                try {
+                    const response = await fetch("http://localhost:9000/backend/distribute.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ players })
+                    });
+                    const data = await response.json();
+                    setCards(data);
+                } catch (error) {
+                    console.log(error);
+                    setError("Irregularity occurred, Failed to fetch data from API.");
+                }
+            };
+            
+            return (
+                <div>
+                    <h1>Card Distribution</h1>
+                    <input
+                        type="number"
+                        name="players"
+                        value={numPlayers}
+                        onChange={(e) => setNumPlayers(e.target.value)}
+                        placeholder="Enter number of players"
+                    />
+                    <button onClick={handleSubmit}>Submit</button>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    
+                    {cards.length > 0 && (
+                        <div>
+                            <h2>Distributed Cards:</h2>
+                            {cards.map((hand, index) => (
+                                <p key={index}>{hand.join(",")}</p>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<CardGame />);
+    </script>
+</body>
+</html>

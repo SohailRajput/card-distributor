@@ -1,0 +1,29 @@
+# docker-compose.yml
+version: '3.9'
+
+services:
+  php-backend:
+    build:
+      context: ./backend
+    container_name: php-backend
+    ports:
+      - "9000:9000"
+    networks:
+      - card-network
+    volumes:
+      - ./:/var/www/html
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-backend
+    networks:
+      - card-network
+
+networks:
+  card-network:
+    driver: bridge
