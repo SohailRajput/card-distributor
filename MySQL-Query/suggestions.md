@@ -1,4 +1,4 @@
-**Add Indexes**
+## Add Indexes
 We can create indexes of the following columns to further optimize the query
 - jobs.job_category_id
 - jobs.job_type_id
@@ -10,14 +10,14 @@ We can create indexes of the following columns to further optimize the query
 - PracticalSkills.name
 - BasicAbilities.name
 
-** Enable Fulltext Search**
+## Enable Fulltext Search
 To optimize LIKE we can make the columns fulltext search indexes.
 - jobs.deleted
 - job_types.deleted
 - jobs.job_category_id-
 - jobs.job_type_id
 
-** Remove Unwanted Joins **
+## Remove Unwanted Joins
 - JobsPersonalities
 - JobsPracticalSkills
 - JobsBasicAbilities
